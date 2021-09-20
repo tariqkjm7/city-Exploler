@@ -22,7 +22,7 @@ class App extends React.Component {
       searchQuery: e.target.city.value
     })
 
-try{     let locURL = `https://us1.locationiq.com/v1/search.php?key=${process.env.REACT_APP_LOCATION_KEY}&q=${this.state.searchQuery}&format=json`
+      try{     let locURL = `https://us1.locationiq.com/v1/search.php?key=${process.env.REACT_APP_LOCATION_KEY}&q=${this.state.searchQuery}&format=json`
     let locResult = await axios.get(locURL)
     console.log(locResult.data[0]);
 
@@ -67,3 +67,4 @@ try{     let locURL = `https://us1.locationiq.com/v1/search.php?key=${process.en
 }
 }
 export default App
+//
