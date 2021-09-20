@@ -22,8 +22,7 @@ class App extends React.Component {
       searchQuery: e.target.city.value
     })
 
-
-    let locURL = `https://us1.locationiq.com/v1/search.php?key=${process.env.REACT_APP_LOCATION_KEY}&q=${this.state.searchQuery}&format=json`
+      try{     let locURL = `https://us1.locationiq.com/v1/search.php?key=${process.env.REACT_APP_LOCATION_KEY}&q=${this.state.searchQuery}&format=json`
     let locResult = await axios.get(locURL)
     console.log(locResult.data[0]);
 
@@ -32,6 +31,10 @@ class App extends React.Component {
       showAll:true 
 
     })
+  } catch{
+    console.log('something went wrong');
+  }
+
 
 
   }
@@ -64,6 +67,4 @@ class App extends React.Component {
 }
 }
 export default App
-// https://us1.locationiq.com/v1/search.php?key=pk.8374e53e41e8e46001e4e83e0a880cda&q=amman&format=json
-
-// https://maps.locationiq.com/v3/staticmap?key=pk.8374e53e41e8e46001e4e83e0a880cda&center=31.9515694,35.9239625&zoom=10
+//
