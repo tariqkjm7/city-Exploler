@@ -7,7 +7,8 @@ class App extends React.Component {
 
     super(props);
     this.state = {
-      locationRes: {},
+      locationResl: {},
+      getDatainfo: [],
       searchQuery: '',
       showAll: false
     }
@@ -22,20 +23,31 @@ class App extends React.Component {
       searchQuery: e.target.city.value
     })
 
-      try{     let locURL = `https://us1.locationiq.com/v1/search.php?key=${process.env.REACT_APP_LOCATION_KEY}&q=${this.state.searchQuery}&format=json`
-    let locResult = await axios.get(locURL)
-    console.log(locResult.data[0]);
-
-    this.setState({
-      locationRes: locResult.data[0],
-      showAll:true 
-
-    })
-  } catch{
-    console.log('something went wrong');
-  }
+    try {
+      let locURL = `https://us1.locationiq.com/v1/search.php?key=${process.env.REACT_APP_LOCATION_KEY}&q=${this.state.searchQuery}&format=json`
+      let locResult = await axios.get(locURL)
+      console.log(locResult.data[0]);
 
 
+      this.setState({
+        locationResl: locResult.data[0],
+        showAll: true
+
+      })
+      // getting weather data
+      let wthUrl = `http://localhost:3001/weather?cityName=${this.state.searchQuery}`;
+      let weatherData = await axios.get(wthUrl);
+      console.log(weatherData.data);
+     await this.setState({
+
+        getDatainfo: weatherData.data
+      })
+      // console.log(getDatainfo);
+
+
+    } catch {
+      console.log('something went wrong');
+    }
 
   }
   render() {
@@ -43,28 +55,37 @@ class App extends React.Component {
       <div>
         <h2>city explorer app </h2>
 
-   
+
         <form onSubmit={this.cityLoc}>
           <input type="text" name='city' />
           <input type="submit" value='render all' />
 
 
         </form>
-          {this.state.showAll && 
-          
+        {this.state.showAll &&
+
           <>
-          <p>city Nmae : {this.state.searchQuery}</p>
-        <p>latitude: {this.state.locationRes.lat}</p>
+            <p>city Name : {this.state.searchQuery}</p>
+            <p>latitude: {this.state.locationResl.lat}</p>
+            <p>longitude:{this.state.locationResl.lon}</p>
+            {
+            this.state.getDatainfo.map(element => {
+              return( <div>
+                    <p>Date{element.date}</p>
+                    <p>description {element.description}</p>
+              </div>
+              )
+            })
+          }
+            {/* <p>Weather Data : {this.state.getDatainfo}</p> */}
 
-        <p>longitude:{this.state.locationRes.lon}</p>
 
-        <img src={`https://maps.locationiq.com/v3/staticmap?key=${process.env.REACT_APP_LOCATION_KEY}&center=${this.state.locationRes.lat},${this.state.locationRes.lon}&zoom=10`} alt="" />
-
-       </>
-    }
-    </div>
-  )
-}
+            <img src={`https://maps.locationiq.com/v3/staticmap?key=${process.env.REACT_APP_LOCATION_KEY}&center=${this.state.locationResl.lat},${this.state.locationResl.lon}&zoom=10`} alt="" />
+          </>
+        }
+      </div>
+    )
+  }
 }
 export default App
 //
