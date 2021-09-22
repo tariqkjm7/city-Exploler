@@ -1,6 +1,7 @@
 import React from 'react'
 import axios from 'axios'
-
+//http://localhost:3005/weather?city=Amman
+// http://localhost:3005/movie?query=Amman
 class App extends React.Component {
 
   constructor(props) {
@@ -10,14 +11,62 @@ class App extends React.Component {
       locationResl: {},
       getDatainfo: [],
       searchQuery: '',
-      showAll: false
+      showAll: false,
+      movieInfo : {},
+      MRes:{}
     }
 
   }
+  weather = async (e) => {
+    e.preventDefault();
+    await this.setState({
+      moQuery: e.target.city.value
+    })
+
+    try {
+      let MURL = `http://localhost:3005/movie?query=${this.state.moQuery}`
+      let movieInfo = await axios.get(MURL)
+      console.log(movieInfo.data[0]);
+
+
+      this.setState({
+        MRes: movieInfo.data[0],
+        showAll: true
+
+      })
+
+
+
+      let wthUrl = `http://localhost:3005/weather?city=${this.state.moQuery}`;
+      let weatherData = await axios.get(wthUrl);
+      console.log(weatherData.data);
+     await this.setState({
+
+        getDatainfo: weatherData.data
+      })
+
+
+
+    } catch {
+      console.log('something went wrong');
+    }
+    
+
+  }
+
+
+
+
+
+
+
+
+
+
+
 
   cityLoc = async (e) => {
     e.preventDefault();
-
 
     await this.setState({
       searchQuery: e.target.city.value
@@ -34,7 +83,7 @@ class App extends React.Component {
         showAll: true
 
       })
-      // getting weather           data
+      // getting weather data
       let wthUrl = `http://localhost:3001/weather?cityName=${this.state.searchQuery}`;
       let weatherData = await axios.get(wthUrl);
       console.log(weatherData.data);
@@ -49,6 +98,8 @@ class App extends React.Component {
       console.log('something went wrong');
     }
 
+    this.weather();
+
   }
   render() {
     return (
@@ -59,15 +110,23 @@ class App extends React.Component {
         <form onSubmit={this.cityLoc}>
           <input type="text" name='city' />
           <input type="submit" value='render all' />
-
-
         </form>
-        {this.state.showAll &&
 
+        {this.state.showAll &&
           <>
             <p>city Name : {this.state.searchQuery}</p>
             <p>latitude: {this.state.locationResl.lat}</p>
             <p>longitude:{this.state.locationResl.lon}</p>
+
+            <p>movie Name : {this.state.moQuery}</p>
+            <p>latitude: {this.state.MRes.lat}</p>
+            <p>longitude:{this.state.MRes.lon}</p>
+
+
+
+
+
+
             {
             this.state.getDatainfo.map(element => {
               return( <div>
@@ -77,7 +136,6 @@ class App extends React.Component {
               )
             })
           }
-            {/* <p>Weather Data : {this.state.getDatainfo}</p> */}
 
 
             <img src={`https://maps.locationiq.com/v3/staticmap?key=${process.env.REACT_APP_LOCATION_KEY}&center=${this.state.locationResl.lat},${this.state.locationResl.lon}&zoom=10`} alt="" />
@@ -88,4 +146,3 @@ class App extends React.Component {
   }
 }
 export default App
-//
