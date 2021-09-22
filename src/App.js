@@ -34,7 +34,7 @@ class App extends React.Component {
         showAll: true
 
       })
-      // getting weather data
+      // getting weather           data
       let wthUrl = `http://localhost:3001/weather?cityName=${this.state.searchQuery}`;
       let weatherData = await axios.get(wthUrl);
       console.log(weatherData.data);
