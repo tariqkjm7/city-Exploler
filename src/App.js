@@ -46,7 +46,7 @@ class App extends React.Component {
 
 
       // getting weather data
-      let wthUrl = `http://localhost:3001/weather?city=${this.state.searchQuery}`;
+      let wthUrl = `${process.env.REACT_APP_SERVER_LINK}/weather?city=${this.state.searchQuery}`;
       let weatherData = await axios.get(wthUrl);
       await this.setState({
 
@@ -58,7 +58,7 @@ class App extends React.Component {
 
       // getting movie data
 
-      let MUrl = `http://localhost:3001/movie?query=${this.state.searchQuery}`;
+      let MUrl = `${process.env.REACT_APP_SERVER_LINK}/movie?query=${this.state.searchQuery}`;
       let MData = await axios.get(MUrl);
       // console.log(MData);
       await this.setState({
