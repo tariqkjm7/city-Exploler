@@ -1,25 +1,29 @@
 import React from 'react'
 import axios from 'axios'
-// http://localhost:3005/weather?city=Amman
-// http://localhost:3001/movie?query=Amman
+import Movie from './components/Movie'
+import Weather from './components/Weather'
+import Location from './components/Location'
+
+
+
 class App extends React.Component {
 
   constructor(props) {
 
     super(props);
     this.state = {
-      locationResl: {},
+      locationResl: [],
       getDatainfo: [],
       searchQuery: '',
       showAll: false,
-      movieInfo : [],
-      MRes:{}
+      movieInfo: [],
+      MRes: {}
     }
 
   }
 
   //http://localhost:3005/movie?query=
-  
+
   cityLoc = async (e) => {
     e.preventDefault();
 
@@ -30,40 +34,38 @@ class App extends React.Component {
     try {
       let locURL = `https://us1.locationiq.com/v1/search.php?key=${process.env.REACT_APP_LOCATION_KEY}&q=${this.state.searchQuery}&format=json`
       let locResult = await axios.get(locURL)
-      // console.log(locResult.data[0]);
+      console.log(locResult.data);
 
 
       this.setState({
-        locationResl: locResult.data[0],
+        locationResl: locResult.data,
         showAll: true
 
       })
+
+
+
       // getting weather data
-      let wthUrl = `http://localhost:3001/weather?city=${this.state.searchQuery}`;
+      let wthUrl = `${process.env.REACT_APP_SERVER_LINK}/weather?city=${this.state.searchQuery}`;
       let weatherData = await axios.get(wthUrl);
-      // console.log(weatherData.data);
-     await this.setState({
+      await this.setState({
 
-        getDatainfo: weatherData.data
+        getDatainfo: weatherData.data,
+        showAll: true
+
       })
-      // console.log(this.state.getDatainfo);
-
+      console.log(this.state.getDatainfo);
 
       // getting movie data
-      
-      let MUrl = `http://localhost:3001/movie?query=${this.state.searchQuery}`;
+
+      let MUrl = `${process.env.REACT_APP_SERVER_LINK}/movie?query=${this.state.searchQuery}`;
       let MData = await axios.get(MUrl);
       // console.log(MData);
-     await this.setState({
-
-      movieInfo: MData.data
+      await this.setState({
+        showAll: true,
+        movieInfo: MData.data
       })
       console.log(this.state.movieInfo);
-      
-
-
-
-
 
 
     } catch {
@@ -86,39 +88,39 @@ class App extends React.Component {
 
         {this.state.showAll &&
           <>
-            <p>city Name : {this.state.searchQuery}</p>
-            <p>latitude: {this.state.locationResl.lat}</p>
-            <p>longitude:{this.state.locationResl.lon}</p>
-            {
-            this.state.getDatainfo.map(element => {
-              return( <div>
-                    <p>Date{element.Date}</p>
-                    <p>description {element.Description}</p>
-                    <p>temp {element.Temperature}</p>
+            {/* {
+              this.state.locationResl.map(element => {
+                return (
 
-              </div>
-              )
-            })
-          }
+                  <Location element1={element} />
+                )
 
+              })
 
-            <img src={`https://maps.locationiq.com/v3/staticmap?key=${process.env.REACT_APP_LOCATION_KEY}&center=${this.state.locationResl.lat},${this.state.locationResl.lon}&zoom=10`} alt="" />
+            } */}
+
 
             {
-               this.state.movieInfo.map(element => {
-                return( <div>
-                      <p> title: {element.title}</p>
-                      <p> Rate : {element.rate}</p>
-                      <img src={element.img} alt="zzzzzzzz" />
-  
-                </div>
+              this.state.getDatainfo.map(element => {
+                return (
+                  <Weather element1={element} />
                 )
               })
-              
+            }
 
 
+
+
+            {
+              this.state.movieInfo.map(element => {
+                return (
+                  <Movie element1={element} />
+                )
+              })
 
             }
+
+
 
           </>
         }
